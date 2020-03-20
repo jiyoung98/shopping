@@ -51,7 +51,7 @@
 
 ### 2주차
 
-> #### 1. 버튼을 누르면 경고창이? (onvlick)
+> #### 1. 버튼을 누르면 경고창이? (onclick)
 >
 > > body에 작성해 놓은 button태그에 onclick를 주어서 버튼을 클릭할 경우 함수가 실행되도록 한다. onclick="buttonalert()". buttonalert는 내가 자바스크립트로 정의할 함수명이다.
 
