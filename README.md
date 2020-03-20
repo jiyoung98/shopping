@@ -146,7 +146,7 @@ if (value1 === "") {
 </select>
 ```
 
-> > option 태그에서 사용하는 value는 무엇일까? 이 option이 선택된 경우 전송되는 값을 지정하는 것이다. 즉, 화면에서 1을 선택한채로 주문했다면 value 값은 < option value="1" >의 value 값인 1로 지정된다. bootstrap에서 붙여넣기만을 했기 때문에 value 속성에 대해서 잘 몰랐기 때문에 문제를 해결할 수 없었다. 즉, javascript에서=는 변수 value2, 즉 \$("#inputGroupSelect01").val(); 이 ""일 때 alert 창이 뜨게 함수를 정의해 놓았지만 첫 option 태그에 value 속성을 아예 넣지않은 현재로서는 아무 값도 전송되지 않은 것이다.***(이 부분은 확실히는 모르겠다. 정확하진 않다.)***
+> > option 태그에서 사용하는 value는 무엇일까? 이 option이 선택된 경우 전송되는 값을 지정하는 것이다. 즉, 화면에서 1을 선택한채로 주문했다면 value 값은 < option value="1" >의 value 값인 1로 지정된다. 따라서, javascript에서 나는 변수 value2, 즉 \$("#inputGroupSelect01").val(); 이 ""일 때 alert 창이 뜨게 함수를 정의해 놓았지만 select의 첫번째 option 태그에 value 속성을 아예 넣지않은 현재로서는 주문하기를 눌렀을 때 ""의 value가 전송된 것이 아니라 아무 값도 전송되지 않은 것이다.***(이 부분은 확실히는 모르겠다. 정확하진 않다.)***
 
 > > 그래서 해결방법으로 첫번째 옵션태그인 < option selected>--수량을 선택하세요.--< /option> 에 value=""의 value 값을 주었다. 즉 화면에서 수량을 선택하지 않고 주문하기 버튼을 누른다면 변수 value2가 ""를 입력값으로 받을 수 있게 된 것이다.
 
