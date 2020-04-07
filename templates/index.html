@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Webpage Title -->
+    <title>shopping</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- 구글폰트 -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="text/javascript">
+      function make_order() {
+        // 1. 제목, 저자, 리뷰 내용을 가져옵니다.
+        let name_give = $("#input-1").val();
+        let quantity_give = $("#inputGroupSelect01").val();
+        let address_give = $("#input-3").val();
+        let phone_give = $("#input-4").val();
+        let phonenumber = /^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$/;
+
+        // 2. 제목, 저자, 리뷰 중 하나라도 입력하지 않았을 경우 alert를 띄웁니다.
+        if (name_give === "") {
+          alert("이름을 입력해주세요!");
+          $("#input-1").focus();
+          return;
+        } else if ((name_give !== "", quantity_give === "")) {
+          alert("수량을 선택해주세요!");
+          $("#inputGroupSelect01").focus();
+          return;
+        } else if ((name_give !== "", quantity_give !== "", address_give === "")) {
+          alert("주소를 입력해주세요!");
+          $("#input-3").focus();
+          return;
+        } else if (
+          (name_give !== "", quantity_give !== "", address_give !== "", phone_give === "")
+        ) {
+          alert("전화번호를 입력해주세요!");
+          $("#input-4").focus();
+          return;
+        } else if (
+          (name_give !== "",
+          quantity_give !== "",
+          address_give !== "",
+          phone_give !== "",
+          phonenumber.test(phone_give) === false)
+        ) {
+          alert(
+            "전화번호의 형식이 잘못되었습니다. 010-0000-0000의 형식으로 입력해주세요."
+          );
+          $("#input-4").focus();
+          return;
+        }
+
+        console.log('여기까지 잘 오나?')
+
+        var data_give = {
+          'name_give': name_give,
+          'quantity_give' : quantity_give,
+          'address_give' : address_give,
+          'phone_give' : phone_give
+        }
+        // 3. POST /reviews 에 저장을 요청합니다.
+
+        $.ajax({
+          type: "POST", // 타입을 작성합니다.
+          url: "/orders", // url을 작성합니다.
+          data: data_give, // data를 작성합니다. },
+          success: function (response) {
+            if (response["result"] == "success") {
+              alert(response["msg"]);
+              $('#input-1').val('');
+              $('#inputGroupSelect01').val('');
+              $('#input-3').val('');
+              $('#input-4').val('');
+              window.location.reload();
+            }
+          }
+        });
+      }
+
+      $(document).ready(function () {
+        $("#orders-box").html("");
+        listing();
+      });
+
+      function listing() {
+        // 1. 리뷰 목록을 서버에 요청하기
+        // 2. 요청 성공 여부 확인하기
+        // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
+        $.ajax({
+          type: "GET",
+          url: "/orders",
+          data: {},
+          success: function (response) {
+            if (response["result"] == "success") {
+              let orders = response['orders'];
+              for (let i = 0; i < orders.length; i++) {
+                make_card(orders[i]['name'], orders[i]['quantity'], orders[i]['address'], orders[i]['phone']);
+              }
+            } else {
+              alert("리뷰를 받아오지 못했습니다");
+            }
+          }
+        });
+      }
+
+      function make_card(name, quantity, address, phone) {
+        let temp_html =
+          "<tr>\
+                                <td>" +
+          name +
+          "</td>\
+                                <td>" +
+          quantity +
+          "</td>\
+                                <td>" +
+          address +
+          "</td>\
+                                <td>" +
+          phone +
+          "</td>\
+                            </tr>";
+        $("#orders-box").append(temp_html);
+      }
+    </script>
+
+    <style type="text/css">
+      * {
+        font-family: "Do Hyeon", sans-serif;
+      }
+      .form-post {
+        border-width: 3px;
+        border-style: solid;
+        border-color: burlywood;
+        border-radius: 10px;
+
+        padding: 20px;
+
+        width: 500px;
+        margin: 2rem auto;
+      }
+      .moumou {
+        width: 450px;
+        height: auto;
+
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+
+        border-radius: 10px;
+      }
+      .moumou-birth {
+        width: 280px;
+        height: auto;
+        float: left;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+      .table {
+        width: 40%;
+        height: auto;
+        margin: auto;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="form-post" id="post-box">
+      <div>
+        <button type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <img
+          src="https://tumblbug-pci.imgix.net/0a67984fa5f64c8ba098fd5a26c48b67f8e47d48/1bf960e29957849f50bca8d89966663893153e75/987c7bdc62e22b6f31515ef7f5d2fecf30f5da15/a8fc9b4e-2949-46fe-b2b6-c5c19fe8a28b.jpg?ixlib=rb-1.1.0&w=1240&h=930&auto=format%2Ccompress&lossless=true&fit=crop&s=becbce856f525d88b12e4e026d1e477c"
+          class="moumou"
+        />
+        <span style="font-size: 40px; color: darksalmon;"
+          >모우모우 모찌인형</span
+        >
+        <span style="font-size: 20px;">10,000원/개</span>
+        <p>
+          <img
+            src="https://tumblbug-psi.imgix.net/0a67984fa5f64c8ba098fd5a26c48b67f8e47d48/1bf960e29957849f50bca8d89966663893153e75/987c7bdc62e22b6f31515ef7f5d2fecf30f5da15/f066ae5b-fd2d-4119-a86a-47bf124cc91d.png?ixlib=rb-1.1.0&w=620&auto=format%2C%20compress&lossless=true&ch=save-data&s=44025ac4798cce6008392c432e07356f"
+            class="moumou-birth"
+          />
+          <span style="color: dimgray; font-size: 18px;">
+            도넛 도우로 만들어지다 떨어져 나가버린 비운의 잔여반죽 '모우모우'가
+            드디어 모찌인형으로 나왔습니다ㅠㅠ
+          </span>
+        </p>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">주문자 이름</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            id="input-1"
+            placeholder="이름를 입력해 주세요."
+            aria-label="이름를 입력해 주세요."
+            aria-describedby="basic-addon1"
+          />
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01"
+              >수량</label
+            >
+          </div>
+          <select class="custom-select form-control" id="inputGroupSelect01">
+            <option selected value="">--수량을 선택하세요.--</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">주소</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            id="input-3"
+            placeholder="주소를 입력해 주세요."
+            aria-label="주소를 입력해 주세요."
+            aria-describedby="basic-addon1"
+          />
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">전화번호</span>
+          </div>
+          <input
+            type="text"
+            class="form-control forphonecheck"
+            id="input-4"
+            placeholder="전화번호를 입력해 주세요."
+            aria-label="전화번호를 입력해 주세요."
+            aria-describedby="basic-addon1"
+          />
+        </div>
+        <div class="text-center">
+          <button type="button" onclick="make_order()" class="btn btn-primary">
+            주문하기
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="orders">
+      <table class="table">
+          <thead>
+              <tr>
+                  <th scope="col">이름</th>
+                  <th scope="col">수량</th>
+                  <th scope="col">주소</th>
+                  <th scope="col">전화번호</th>
+              </tr>
+          </thead>
+          <tbody id="orders-box">
+              <tr>
+                  <td>Otto</td>
+                  <td>@mdo</td>
+                  <td>@mdo</td>
+                  <td>@mdo</td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+
+  </body>
+</html>
